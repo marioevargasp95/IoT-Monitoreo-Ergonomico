@@ -1,12 +1,28 @@
 # IoT — Monitoreo Ergonómico
 
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)
+![InfluxDB](https://img.shields.io/badge/InfluxDB-22ADF6?style=flat-square&logo=influxdb&logoColor=white)
+![Arduino](https://img.shields.io/badge/Arduino-00979D?style=flat-square&logo=arduino&logoColor=white)
+![Wokwi](https://img.shields.io/badge/Wokwi-Simulator-2EA043?style=flat-square)
+![IoT](https://img.shields.io/badge/IoT-Sensores-FF6C37?style=flat-square)
+
 **Universidad de La Salle (Bogotá)** · Curso Internet de las Cosas · Grupo 02 · 2026-1
 **Autores:** Mario Esteban Vargas Pisco · Yeison Esteven García Olaya
 
-Sistema IoT de prototipo funcional que detecta posturas inadecuadas en tiempo
-real mediante dos sensores físicos (o simulados), genera alertas visuales
-locales y transmite datos a un dashboard en la nube para visualización y
-análisis básico.
+## Descripción
+
+Sistema IoT orientado al monitoreo ergonómico en puestos de trabajo. Captura
+variables fisiológicas mediante sensores físicos (o simulados) y emite alertas
+en tiempo real cuando se detecta postura incorrecta o sedentarismo prolongado.
+Los datos viajan por MQTT a la nube y se visualizan en un dashboard
+multi-página con análisis básico embebido.
+
+## Objetivo
+
+Detectar en tiempo real condiciones ergonómicas de riesgo (mala postura,
+tiempo sedentario excesivo) y activar una alerta física mediante un actuador,
+contribuyendo a reducir lesiones musculoesqueléticas en entornos de oficina.
 
 ---
 
@@ -26,23 +42,52 @@ análisis básico.
 | Almacenamiento | InfluxDB Cloud (bucket `ErgIoT_Bucket`) |
 | Visualización | Streamlit + Plotly multi-página con identidad La Salle |
 
+## Componentes
+
+| Componente | Rol |
+|---|---|
+| Sensor de postura (MPU-6050) | Captura la inclinación del tronco vía acelerómetro |
+| Sensor de presión (FSR402) | Detecta si el usuario está sentado |
+| Actuador (LED RGB) | Emite alerta visual cuando se supera el umbral |
+| Microcontrolador (ESP32) | Lee sensores, calcula ángulo y publica por MQTT |
+| Wokwi | Simulación del circuito antes del despliegue físico |
+| Notebook Python | Generación de datos de simulación y análisis exploratorio |
+| Dashboard Streamlit | Visualización en tiempo real + análisis básico |
+
 ---
 
-## Contenido del repositorio
+## Estructura del repositorio
 
-| Carpeta | Contenido |
-|---|---|
-| [`Wokwi/`](Wokwi/) | Firmware MicroPython del ESP32 (`main.py`, `imu.py`) y diagrama del circuito (`diagram.json`) para simulación en [wokwi.com](https://wokwi.com). |
-| [`Notebook/`](Notebook/) | Jupyter notebook con la simulación de la jornada laboral y generación de datos sintéticos. |
-| [`Datos/`](Datos/) | CSV y Excel con las 360 observaciones simuladas, más gráficas de la jornada. |
-| [`Dashboard/`](Dashboard/) | **Módulo 5** — Aplicación Streamlit multi-página con KPIs, análisis básico, flags positivos y monitoreo de pausas activas. |
+```
+IoT-Monitoreo-Ergonomico/
+├── Wokwi/                     # Firmware MicroPython y diagrama del circuito
+│   ├── main.py
+│   ├── imu.py
+│   └── diagram.json
+├── Notebook/
+│   └── Nodo_sensor.ipynb     # Simulación de la jornada laboral
+├── Datos/                     # CSV/Excel con las 360 observaciones + gráficas
+├── Dashboard/                 # Módulo 5 — App Streamlit multi-página
+│   ├── app.py                # Vista principal: KPIs, series, análisis
+│   ├── analytics.py          # Funciones de análisis y detección
+│   ├── data_loader.py        # Cliente InfluxDB
+│   ├── config.py             # Carga env vars + paleta institucional
+│   ├── pages/
+│   │   ├── 1_Buena_Postura.py    # Refuerzo positivo + logros
+│   │   └── 2_Pausas_Activas.py   # tiempo_sentado + alerta_pausa
+│   ├── docs/
+│   │   ├── JUSTIFICACION_TECNOLOGIAS.md
+│   │   └── GUION_VIDEO.md
+│   ├── requirements.txt
+│   └── .env.example          # Plantilla de credenciales (sin secrets)
+└── README.md
+```
 
 ---
 
 ## Modelo de datos (InfluxDB)
 
-**Bucket:** `ErgIoT_Bucket`
-**Measurement:** `telemetria_ergonomica`
+**Bucket:** `ErgIoT_Bucket` · **Measurement:** `telemetria_ergonomica`
 
 | Field | Tipo | Descripción |
 |---|---|---|
@@ -54,8 +99,6 @@ análisis básico.
 | `tiempo_sentado` | float | Minutos acumulados sentado continuo |
 | `alerta_pausa` | int (0/1) | 1 cuando `tiempo_sentado` supera el umbral (50 min) |
 
----
-
 ## Lógica de alertas (firmware)
 
 | Estado | LED | Condición |
@@ -66,6 +109,19 @@ análisis básico.
 | Pausa activa | 🟠 Naranja | `tiempo_sentado ≥ 50 min` |
 
 **Muestreo:** 0.5 Hz (1 lectura cada 2 s).
+
+---
+
+## Tecnologías
+
+- **MicroPython** — Firmware del ESP32 (lectura de sensores, cálculo de ángulo, publicación MQTT).
+- **MQTT (HiveMQ Cloud)** — Mensajería ligera para IoT con QoS 1.
+- **InfluxDB Cloud** — Almacenamiento de series temporales con compresión nativa y Flux.
+- **Python** — Procesamiento, análisis y dashboard.
+- **Streamlit + Plotly** — Visualización interactiva con análisis estadístico embebido.
+- **pandas + numpy** — Estadística descriptiva, correlación, detección de eventos.
+- **Wokwi** — Simulación del circuito ESP32 sin hardware físico.
+- **Jupyter Notebook** — Exploración y generación de datos.
 
 ---
 
@@ -87,11 +143,25 @@ análisis básico.
 ```powershell
 cd Dashboard
 pip install -r requirements.txt
-copy .env.example .env       # luego pegar tu token de InfluxDB en .env
+copy .env.example .env       # editar .env con tu token de InfluxDB
 streamlit run app.py
 ```
 
-Más detalles en [`Dashboard/README.md`](Dashboard/README.md).
+La app queda en `http://localhost:8501` con tres vistas:
+- **Monitoreo Ergonómico** — KPIs, series temporales, distribución, mapa de calor.
+- **Buena Postura** — Flag actual, rachas, sesiones doradas y logros.
+- **Pausas Activas** — `tiempo_sentado` y `alerta_pausa` con recomendaciones.
+
+Más detalle en [`Dashboard/README.md`](Dashboard/README.md).
+
+---
+
+## Instalación rápida (solo notebook)
+
+```bash
+pip install pandas numpy matplotlib jupyter
+jupyter notebook Notebook/Nodo_sensor.ipynb
+```
 
 ---
 
