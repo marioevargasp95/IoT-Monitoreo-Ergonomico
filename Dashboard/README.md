@@ -30,6 +30,16 @@ Detalle en [`docs/JUSTIFICACION_TECNOLOGIAS.md`](docs/JUSTIFICACION_TECNOLOGIAS.
 
 ## Cómo correrlo
 
+**Opción rápida (Windows):** doble-clic sobre los scripts incluidos.
+
+| Script | Qué hace |
+|---|---|
+| `Iniciar Dashboard.bat` | Lanza Streamlit local en `http://localhost:8501` |
+| `Iniciar Dashboard Publico.bat` | Lanza Streamlit + Cloudflare Tunnel → URL pública HTTPS |
+| `Detener Dashboard.bat` | Mata todos los procesos de Streamlit y cloudflared |
+
+**Opción manual:**
+
 ```powershell
 # 1. Instalar dependencias
 pip install -r requirements.txt
@@ -42,7 +52,8 @@ copy .env.example .env
 streamlit run app.py
 ```
 
-La app queda en `http://localhost:8501`. Refresca cada 30 s automáticamente.
+La app queda en `http://localhost:8501`. Refresca cada 30 s automáticamente
+o con el botón "Refrescar datos" en la sidebar.
 
 ## Estructura
 
