@@ -1,0 +1,15 @@
+[theme]
+# Paleta institucional Universidad de La Salle (Bogotá)
+primaryColor          = "#f2a900"   # dorado institucional (acento, botones, selección)
+backgroundColor       = "#ffffff"   # fondo principal
+secondaryBackgroundColor = "#f5f7fa" # sidebar / tarjetas
+textColor             = "#001e38"   # texto principal (azul marino casi negro)
+font                  = "sans serif"
+base                  = "light"
+
+[server]
+headless = true
+runOnSave = true
+
+[browser]
+gatherUsageStats = false
