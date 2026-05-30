@@ -14,8 +14,16 @@
       --dorado-osc: #d4a017;
       --rojo: #C73E1D;
       --gris: #f5f7fa;
+      --gris-2: #e2e8f0;
       --blanco: #ffffff;
       --texto: #001e38;
+      /* Escala fluida basada en el viewport */
+      --fs-base: clamp(16px, 1.4vw, 28px);
+      --fs-h1:   clamp(36px, 4.2vw, 80px);
+      --fs-h2:   clamp(20px, 2.1vw, 40px);
+      --fs-body: clamp(16px, 1.5vw, 30px);
+      --fs-kpi:  clamp(48px, 6vw, 110px);
+      --pad:     clamp(36px, 5vw, 100px);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,8 +32,9 @@
       height: 100%;
       font-family: 'Segoe UI', 'Inter', 'Calibri', system-ui, sans-serif;
       color: var(--texto);
-      background: #1a1a1a;
+      background: #0a0a0a;
       overflow: hidden;
+      font-size: var(--fs-base);
     }
 
     /* ---------- Layout principal ---------- */
@@ -40,266 +49,420 @@
 
     .slide {
       display: none;
-      width: min(95vw, calc(95vh * 16 / 9));
-      aspect-ratio: 16 / 9;
+      width: 100vw;
+      height: 100vh;
       background: var(--blanco);
-      border-radius: 14px;
-      box-shadow: 0 22px 60px rgba(0,0,0,.5);
       overflow: hidden;
       position: relative;
-      animation: fadeIn .35s ease;
     }
-    .slide.active { display: block; }
+    .slide.active { display: block; animation: fadeIn .35s ease; }
 
     @keyframes fadeIn {
-      from { opacity: 0; transform: scale(.985); }
-      to   { opacity: 1; transform: scale(1); }
+      from { opacity: 0; }
+      to   { opacity: 1; }
     }
 
-    /* ---------- Cabecera común con logo ---------- */
+    /* ---------- Layout común de slide interior ---------- */
     .slide-inner {
       position: relative;
       width: 100%;
       height: 100%;
-      padding: 56px 72px 72px;
+      padding: var(--pad);
       display: flex;
       flex-direction: column;
     }
     .logo-corner {
       position: absolute;
-      top: 28px;
-      right: 36px;
-      height: 72px;
+      top: clamp(22px, 2.2vw, 48px);
+      right: clamp(28px, 2.6vw, 56px);
+      height: clamp(54px, 5.5vh, 110px);
       width: auto;
-      filter: drop-shadow(0 2px 4px rgba(0,0,0,.08));
+      z-index: 5;
     }
-    .slide.dark .logo-corner { filter: brightness(0) invert(1) drop-shadow(0 2px 6px rgba(0,0,0,.4)); }
+    .slide.dark .logo-corner {
+      filter: brightness(0) invert(1);
+    }
 
+    .slide-header {
+      flex-shrink: 0;
+      margin-bottom: clamp(20px, 2vw, 50px);
+      max-width: 78%;
+    }
     .slide h1 {
       color: var(--azul);
-      font-size: 44px;
-      font-weight: 700;
-      letter-spacing: -.5px;
-      margin-bottom: 8px;
-      padding-bottom: 14px;
-      border-bottom: 4px solid var(--dorado);
+      font-size: var(--fs-h1);
+      font-weight: 800;
+      letter-spacing: -1px;
+      line-height: 1.05;
+      margin-bottom: clamp(8px, 0.8vw, 16px);
+      padding-bottom: clamp(10px, 1vw, 22px);
+      border-bottom: 6px solid var(--dorado);
       display: inline-block;
     }
     .slide h2 {
       color: var(--azul-med);
-      font-size: 22px;
+      font-size: var(--fs-h2);
       font-weight: 500;
-      margin-bottom: 28px;
+      margin-top: clamp(8px, 1vw, 24px);
+      line-height: 1.3;
     }
-    .slide p { font-size: 19px; line-height: 1.55; color: var(--texto); }
-    .slide li { font-size: 19px; line-height: 1.7; }
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: clamp(14px, 1.5vw, 30px);
+      min-height: 0;
+    }
+    .slide p { font-size: var(--fs-body); line-height: 1.5; color: var(--texto); }
+    .slide li { font-size: var(--fs-body); line-height: 1.65; }
+    .slide code { background: var(--gris); padding: 2px 8px; border-radius: 4px; font-size: 0.9em; color: var(--azul); }
 
     /* ---------- Pie de página ---------- */
     .footer {
       position: absolute;
-      bottom: 18px;
-      left: 72px;
-      right: 72px;
+      bottom: clamp(20px, 2vw, 44px);
+      left: var(--pad);
+      right: var(--pad);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 12px;
+      font-size: clamp(11px, 1vw, 18px);
       color: var(--azul-med);
-      letter-spacing: .3px;
+      letter-spacing: .5px;
     }
     .footer .brand { font-weight: 600; }
-    .footer .page  { background: var(--dorado); color: var(--azul-osc); padding: 4px 10px; border-radius: 99px; font-weight: 700; }
+    .footer .page  {
+      background: var(--dorado); color: var(--azul-osc);
+      padding: clamp(4px, 0.4vw, 10px) clamp(12px, 1.1vw, 22px);
+      border-radius: 99px; font-weight: 800; letter-spacing: 1px;
+    }
 
     /* ---------- Slide oscura ---------- */
-    .slide.dark { background: var(--azul); color: #fff; }
-    .slide.dark .slide-inner { color: #fff; }
-    .slide.dark h1, .slide.dark h2, .slide.dark p, .slide.dark li { color: #fff; }
-    .slide.dark h1 { border-bottom-color: var(--dorado); }
+    .slide.dark { background: var(--azul); }
+    .slide.dark h1 { color: #fff; border-bottom-color: var(--dorado); }
+    .slide.dark h2 { color: var(--azul-claro); }
+    .slide.dark p, .slide.dark li { color: #fff; }
     .slide.dark .footer { color: var(--azul-claro); }
-    .slide.dark .footer .page { background: var(--dorado); color: var(--azul-osc); }
 
     /* ---------- Slide portada ---------- */
     .cover {
-      background: linear-gradient(135deg, var(--azul) 0%, var(--azul-osc) 100%);
+      background: linear-gradient(135deg, var(--azul) 0%, var(--azul-osc) 70%, #000820 100%);
       color: #fff;
-      display: flex; align-items: center; justify-content: center;
+      display: grid;
+      grid-template-rows: 1fr auto 1fr;
+      justify-items: center;
+      align-items: center;
+      padding: clamp(50px, 6vh, 110px) var(--pad);
       position: relative;
+    }
+    .cover::before {
+      content: ""; position: absolute; top: 0; left: 0; right: 0;
+      height: 8px; background: var(--dorado);
     }
     .cover::after {
       content: ""; position: absolute; bottom: 0; left: 0; right: 0;
-      height: 14px; background: var(--dorado);
+      height: 16px; background: var(--dorado);
+    }
+    .cover .top {
+      align-self: end;
+      display: flex; flex-direction: column; align-items: center;
+      gap: clamp(16px, 1.8vw, 36px);
+    }
+    .cover .top img {
+      width: clamp(140px, 14vw, 280px);
+      filter: brightness(0) invert(1) drop-shadow(0 4px 20px rgba(242,169,0,.3));
+    }
+    .cover .top .badge {
+      background: var(--dorado); color: var(--azul-osc);
+      padding: clamp(7px, 0.7vw, 14px) clamp(18px, 2vw, 38px);
+      border-radius: 99px;
+      font-size: clamp(11px, 1.1vw, 22px);
+      font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase;
     }
     .cover .center {
-      text-align: center; max-width: 80%;
+      text-align: center;
     }
-    .cover img.logo-big {
-      width: 180px; margin-bottom: 28px;
-      filter: brightness(0) invert(1) drop-shadow(0 4px 10px rgba(0,0,0,.4));
+    .cover .center h1 {
+      font-size: clamp(64px, 8vw, 160px);
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -3px;
+      margin-bottom: clamp(8px, 1vw, 20px);
+      color: #fff;
+      border: none; padding: 0;
+      display: block;
+      background: linear-gradient(180deg, #fff 0%, var(--azul-claro) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    .cover .badge {
+    .cover .center h2 {
+      font-size: clamp(20px, 2.4vw, 48px);
+      font-weight: 300;
+      color: var(--azul-claro);
+      margin: 0;
+      letter-spacing: 1px;
+    }
+    .cover .bottom {
+      align-self: start;
+      text-align: center;
+      width: 100%;
+    }
+    .cover .bottom .label {
+      color: var(--dorado);
+      font-size: clamp(12px, 1.2vw, 22px);
+      font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      margin-bottom: clamp(12px, 1.4vw, 28px);
+    }
+    .cover .bottom .nombres {
+      font-size: clamp(20px, 2.4vw, 46px);
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.4;
+      margin-bottom: clamp(20px, 2vw, 42px);
+    }
+    .cover .bottom .curso {
+      font-size: clamp(12px, 1.2vw, 22px);
+      color: var(--azul-claro);
+      letter-spacing: 1.5px;
+      padding-top: clamp(16px, 1.8vw, 36px);
+      border-top: 1px solid rgba(255,255,255,.18);
       display: inline-block;
-      background: var(--dorado); color: var(--azul-osc);
-      padding: 6px 16px; border-radius: 99px;
-      font-size: 13px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
-      margin-bottom: 18px;
-    }
-    .cover h1 {
-      font-size: 60px; font-weight: 800; line-height: 1.1; margin-bottom: 10px;
-      border: none; padding: 0; color: #fff;
-    }
-    .cover h2 {
-      font-size: 22px; font-weight: 400; color: var(--azul-claro);
-      margin-bottom: 36px;
-    }
-    .cover .autores {
-      font-size: 18px; line-height: 1.6;
-      border-top: 1px solid rgba(255,255,255,.2);
-      padding-top: 20px;
-    }
-    .cover .autores strong { color: var(--dorado); font-weight: 700; }
-    .cover .curso {
-      margin-top: 14px; font-size: 14px; color: var(--azul-claro); letter-spacing: .8px;
+      padding-left: clamp(40px, 5vw, 100px);
+      padding-right: clamp(40px, 5vw, 100px);
     }
 
     /* ---------- Bullets / iconos ---------- */
     ul.bullets { list-style: none; padding: 0; }
     ul.bullets li {
-      position: relative; padding: 10px 0 10px 36px;
+      position: relative;
+      padding: clamp(8px, 0.9vw, 18px) 0 clamp(8px, 0.9vw, 18px) clamp(36px, 3vw, 60px);
     }
     ul.bullets li::before {
-      content: "▸"; position: absolute; left: 8px; top: 8px;
-      color: var(--dorado); font-size: 22px; font-weight: 700;
+      content: "▸"; position: absolute; left: clamp(6px, 0.6vw, 14px); top: clamp(6px, 0.7vw, 16px);
+      color: var(--dorado); font-size: clamp(22px, 2vw, 42px); font-weight: 700;
+      line-height: 1;
     }
+    .slide.dark ul.bullets li::before { color: var(--dorado); }
 
     /* ---------- Grids ---------- */
-    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 36px; }
-    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; }
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 3vw, 60px); align-items: start; }
+    .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: clamp(22px, 2.4vw, 50px); }
 
     .card {
       background: var(--gris);
-      border-left: 5px solid var(--dorado);
-      border-radius: 8px;
-      padding: 20px 24px;
+      border-left: 6px solid var(--dorado);
+      border-radius: 12px;
+      padding: clamp(20px, 2vw, 40px);
     }
-    .card h3 { color: var(--azul); font-size: 18px; margin-bottom: 8px; }
-    .card p { font-size: 16px; color: var(--azul-med); }
+    .card h3 { color: var(--azul); font-size: clamp(18px, 1.7vw, 32px); margin-bottom: clamp(8px, 0.8vw, 16px); }
+    .card p  { font-size: clamp(15px, 1.3vw, 24px); color: var(--azul-med); }
 
     /* ---------- KPI tiles ---------- */
-    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; margin-top: 24px; }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: clamp(20px, 2.2vw, 44px);
+      margin: clamp(20px, 2vw, 50px) 0;
+    }
     .kpi {
       background: linear-gradient(135deg, var(--dorado) 0%, var(--dorado-osc) 100%);
       color: var(--azul-osc);
-      border-radius: 12px;
-      padding: 26px 18px;
+      border-radius: 18px;
+      padding: clamp(24px, 2.8vw, 56px) clamp(16px, 1.8vw, 32px);
       text-align: center;
-      box-shadow: 0 8px 18px rgba(242,169,0,.25);
+      box-shadow: 0 12px 28px rgba(242,169,0,.32);
     }
-    .kpi .value { font-size: 52px; font-weight: 800; line-height: 1; }
-    .kpi .label { margin-top: 8px; font-size: 14px; font-weight: 600; letter-spacing: .3px; }
+    .kpi .value { font-size: var(--fs-kpi); font-weight: 900; line-height: 1; letter-spacing: -2px; }
+    .kpi .label { margin-top: clamp(10px, 1vw, 22px); font-size: clamp(14px, 1.3vw, 26px); font-weight: 700; letter-spacing: .5px; }
 
     /* ---------- Diagrama pipeline ---------- */
-    .pipeline { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 26px 0; }
+    .pipeline {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: clamp(6px, 0.6vw, 14px);
+    }
     .pipeline .stage {
       flex: 1; text-align: center;
       background: var(--gris);
-      border: 2px solid var(--azul);
-      border-radius: 10px;
-      padding: 18px 8px;
-      font-size: 14px; color: var(--azul);
-      position: relative;
+      border: 3px solid var(--azul);
+      border-radius: 14px;
+      padding: clamp(16px, 1.6vw, 36px) clamp(6px, 0.6vw, 14px);
+      font-size: clamp(13px, 1.2vw, 22px);
+      color: var(--azul);
+      transition: all .2s;
     }
-    .pipeline .stage strong { display: block; font-size: 15px; color: var(--azul-osc); margin-bottom: 4px; }
-    .pipeline .arrow { color: var(--dorado); font-size: 26px; font-weight: 700; }
+    .pipeline .stage strong {
+      display: block;
+      font-size: clamp(16px, 1.5vw, 28px);
+      color: var(--azul-osc);
+      margin-bottom: clamp(4px, 0.5vw, 10px);
+    }
+    .pipeline .arrow {
+      color: var(--dorado);
+      font-size: clamp(24px, 2.4vw, 48px);
+      font-weight: 700;
+      flex: 0 0 auto;
+    }
 
     /* ---------- Tabla técnica ---------- */
     table.tech {
-      width: 100%; border-collapse: collapse; margin-top: 14px;
-      font-size: 16px;
+      width: 100%; border-collapse: collapse;
+      font-size: clamp(15px, 1.4vw, 26px);
+      border-radius: 12px; overflow: hidden;
+      box-shadow: 0 4px 14px rgba(0,48,87,.08);
     }
     table.tech th, table.tech td {
-      padding: 12px 14px; text-align: left;
-      border-bottom: 1px solid #e2e8f0;
+      padding: clamp(12px, 1.2vw, 24px) clamp(14px, 1.3vw, 28px);
+      text-align: left;
     }
-    table.tech thead { background: var(--azul); color: #fff; }
+    table.tech thead {
+      background: var(--azul);
+      color: #fff;
+      font-size: clamp(14px, 1.3vw, 24px);
+      letter-spacing: .5px;
+    }
+    table.tech thead th { font-weight: 700; }
+    table.tech tbody tr { border-bottom: 1px solid var(--gris-2); }
+    table.tech tbody tr:last-child { border-bottom: none; }
     table.tech tbody tr:nth-child(odd) { background: var(--gris); }
-    table.tech td:first-child { font-weight: 700; color: var(--azul-osc); }
+    table.tech td:first-child { font-weight: 700; color: var(--azul-osc); white-space: nowrap; }
 
     /* ---------- Mockup dashboard ---------- */
     .mockup {
-      background: #f0f2f6; border-radius: 10px; padding: 14px; height: 100%;
-      box-shadow: inset 0 0 0 1px #d6dbe2;
-      display: flex; flex-direction: column; gap: 10px;
+      background: #f0f2f6;
+      border-radius: 12px;
+      padding: clamp(14px, 1.4vw, 26px);
+      height: 100%; min-height: 50vh;
+      box-shadow: inset 0 0 0 2px #d6dbe2, 0 8px 20px rgba(0,0,0,.08);
+      display: flex; flex-direction: column;
+      gap: clamp(10px, 1vw, 20px);
     }
     .mockup .mhead {
       background: linear-gradient(90deg, var(--azul) 0%, var(--azul-med) 100%);
-      color: #fff; padding: 8px 14px; border-radius: 6px; font-size: 13px; font-weight: 600;
+      color: #fff;
+      padding: clamp(10px, 1vw, 20px) clamp(14px, 1.3vw, 26px);
+      border-radius: 8px;
+      font-size: clamp(13px, 1.2vw, 22px);
+      font-weight: 600;
     }
-    .mockup .mkpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .mockup .mkpi { background: #fff; padding: 10px; border-radius: 6px; border-left: 3px solid var(--dorado); }
-    .mockup .mkpi .v { font-size: 18px; font-weight: 700; color: var(--azul); }
-    .mockup .mkpi .l { font-size: 10px; color: var(--azul-med); margin-top: 2px; }
+    .mockup .mkpis {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: clamp(8px, 0.8vw, 16px);
+    }
+    .mockup .mkpi {
+      background: #fff;
+      padding: clamp(10px, 1vw, 20px);
+      border-radius: 8px;
+      border-left: 4px solid var(--dorado);
+    }
+    .mockup .mkpi .v { font-size: clamp(18px, 1.7vw, 32px); font-weight: 800; color: var(--azul); line-height: 1; }
+    .mockup .mkpi .l { font-size: clamp(10px, 0.95vw, 18px); color: var(--azul-med); margin-top: 4px; }
     .mockup .mchart {
-      flex: 1; background: #fff; border-radius: 6px; padding: 10px; position: relative; overflow: hidden;
-      min-height: 110px;
+      flex: 1; background: #fff; border-radius: 8px;
+      padding: clamp(10px, 1vw, 20px);
+      display: flex; flex-direction: column; min-height: 0;
     }
-    .mockup .mchart .ttl { font-size: 11px; color: var(--azul-med); font-weight: 600; margin-bottom: 6px; }
+    .mockup .mchart .ttl {
+      font-size: clamp(11px, 1.05vw, 20px);
+      color: var(--azul-med);
+      font-weight: 600;
+      margin-bottom: clamp(6px, 0.7vw, 14px);
+    }
 
     /* Línea simulada de serie temporal */
-    .sparkline { display: flex; align-items: flex-end; gap: 2px; height: 70px; }
+    .sparkline { display: flex; align-items: flex-end; gap: 2px; flex: 1; min-height: clamp(60px, 8vh, 140px); }
     .sparkline .bar {
-      flex: 1; background: linear-gradient(180deg, var(--azul) 0%, var(--azul-med) 100%);
-      border-radius: 1px;
+      flex: 1;
+      background: linear-gradient(180deg, var(--azul) 0%, var(--azul-med) 100%);
+      border-radius: 2px 2px 0 0;
     }
-    .sparkline.warn .bar { background: linear-gradient(180deg, var(--dorado) 0%, var(--dorado-osc) 100%); }
 
-    /* Banner buena postura */
+    /* Banner buena postura mockup */
     .flag-banner {
       background: linear-gradient(135deg, rgba(0,48,87,.1) 0%, rgba(0,48,87,.25) 100%);
       border-left: 6px solid var(--azul);
-      border-radius: 8px;
-      padding: 14px;
+      border-radius: 10px;
+      padding: clamp(14px, 1.3vw, 26px);
     }
-    .flag-banner .e { font-size: 28px; }
-    .flag-banner .t { font-size: 16px; font-weight: 700; color: var(--azul); margin-top: 4px; }
-    .flag-banner .s { font-size: 12px; color: #555; margin-top: 2px; }
+    .flag-banner .e { font-size: clamp(28px, 2.8vw, 56px); line-height: 1; }
+    .flag-banner .t { font-size: clamp(15px, 1.4vw, 28px); font-weight: 800; color: var(--azul); margin-top: 6px; }
+    .flag-banner .s { font-size: clamp(11px, 1vw, 20px); color: #555; margin-top: 4px; }
 
-    /* ---------- Listas en 2 columnas ---------- */
-    .col-list { columns: 2; column-gap: 36px; }
+    /* ---------- Lista en columnas ---------- */
+    .col-list { columns: 2; column-gap: clamp(36px, 4vw, 80px); }
     .col-list li { break-inside: avoid; }
 
-    /* ---------- Controles ---------- */
+    /* ---------- Highlight box ---------- */
+    .highlight {
+      background: var(--gris);
+      border-left: 6px solid var(--dorado);
+      padding: clamp(18px, 2vw, 40px) clamp(22px, 2.4vw, 48px);
+      border-radius: 12px;
+    }
+    .highlight p { font-size: clamp(14px, 1.3vw, 26px); color: var(--azul-med); }
+    .highlight strong { color: var(--azul); }
+
+    .dark-card {
+      background: rgba(255,255,255,.08);
+      border-left: 6px solid var(--dorado);
+      padding: clamp(18px, 1.8vw, 36px) clamp(22px, 2.4vw, 48px);
+      border-radius: 12px;
+    }
+    .dark-card p { color: #fff; font-size: clamp(15px, 1.4vw, 28px); }
+    .dark-card .num {
+      color: var(--dorado);
+      font-weight: 800;
+      font-size: clamp(20px, 1.8vw, 36px);
+      margin-right: clamp(8px, 0.8vw, 16px);
+    }
+
+    /* ---------- Controles flotantes ---------- */
     .controls {
-      position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
-      display: flex; gap: 10px; align-items: center;
-      background: rgba(0,0,0,.55);
-      backdrop-filter: blur(10px);
-      padding: 10px 18px; border-radius: 99px;
+      position: fixed;
+      bottom: clamp(14px, 1.6vw, 32px);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: clamp(8px, 0.8vw, 16px);
+      align-items: center;
+      background: rgba(0,0,0,.7);
+      backdrop-filter: blur(12px);
+      padding: clamp(10px, 1vw, 18px) clamp(18px, 1.8vw, 32px);
+      border-radius: 99px;
       z-index: 1000;
-      font-size: 13px; color: #fff;
+      font-size: clamp(12px, 1.1vw, 20px);
+      color: #fff;
+      box-shadow: 0 8px 24px rgba(0,0,0,.4);
     }
     .controls button {
-      background: var(--dorado); color: var(--azul-osc);
-      border: none; border-radius: 6px;
-      padding: 6px 14px; cursor: pointer; font-weight: 700;
-      font-size: 13px;
+      background: var(--dorado);
+      color: var(--azul-osc);
+      border: none;
+      border-radius: 8px;
+      padding: clamp(6px, 0.6vw, 12px) clamp(14px, 1.3vw, 26px);
+      cursor: pointer;
+      font-weight: 700;
+      font-size: clamp(11px, 1.05vw, 20px);
+      transition: background .15s;
     }
     .controls button:hover { background: var(--dorado-osc); color: #fff; }
-    .controls .counter { font-weight: 600; min-width: 60px; text-align: center; }
+    .controls .counter { font-weight: 600; min-width: clamp(60px, 5vw, 100px); text-align: center; }
 
     /* ---------- Impresión a PDF ---------- */
     @media print {
-      html, body { background: #fff; height: auto; overflow: visible; }
+      html, body { background: #fff; height: auto; overflow: visible; font-size: 16px; }
       .deck { width: 100%; height: auto; display: block; }
       .controls { display: none; }
       .slide {
         display: block !important;
-        width: 100%; aspect-ratio: 16/9;
-        box-shadow: none; border-radius: 0;
+        width: 100%; height: 100vh;
+        aspect-ratio: 16/9;
         page-break-after: always;
         page-break-inside: avoid;
-        border: none;
       }
-      @page { size: 1280px 720px landscape; margin: 0; }
+      .slide:last-child { page-break-after: auto; }
+      @page { size: 1920px 1080px landscape; margin: 0; }
     }
   </style>
 </head>
@@ -307,15 +470,19 @@
 
 <div class="deck" id="deck">
 
-  <!-- ========================================================= SLIDE 1 — Portada -->
+  <!-- ====================================================== SLIDE 1 — Portada -->
   <section class="slide cover active" id="s1">
-    <div class="center">
-      <img class="logo-big" src="assets/logo_lasalle.png" alt="Universidad de La Salle" />
+    <div class="top">
+      <img src="assets/logo_lasalle.png" alt="Universidad de La Salle" />
       <div class="badge">Módulo 5 · Visualización y análisis IoT</div>
+    </div>
+    <div class="center">
       <h1>ErgIoT</h1>
       <h2>Monitoreo Ergonómico en Tiempo Real</h2>
-      <div class="autores">
-        <strong>Integrantes</strong><br/>
+    </div>
+    <div class="bottom">
+      <div class="label">Integrantes</div>
+      <div class="nombres">
         Mario Esteban Vargas Pisco<br/>
         Yeison Esteven García Olaya
       </div>
@@ -323,19 +490,23 @@
     </div>
   </section>
 
-  <!-- ========================================================= SLIDE 2 — Problema -->
+  <!-- ====================================================== SLIDE 2 — Problema -->
   <section class="slide" id="s2">
     <img class="logo-corner" src="assets/logo_lasalle.png" alt="" />
     <div class="slide-inner">
-      <h1>El problema que abordamos</h1>
-      <h2>Sedentarismo y postura en el trabajo de oficina</h2>
-      <ul class="bullets" style="margin-top: 14px;">
-        <li>Trabajadores de oficina pasan <strong>6 a 8 horas sentados</strong> al día.</li>
-        <li>La mala postura genera <strong>lesiones musculoesqueléticas crónicas</strong>.</li>
-        <li>El sedentarismo prolongado incrementa el <strong>riesgo cardiovascular</strong>.</li>
-        <li>No hay <strong>retroalimentación inmediata</strong> sobre la postura durante el trabajo.</li>
-        <li>Las pausas activas se olvidan: dependen de la disciplina del usuario.</li>
-      </ul>
+      <div class="slide-header">
+        <h1>El problema</h1>
+        <h2>Sedentarismo y postura en el trabajo de oficina</h2>
+      </div>
+      <div class="slide-content">
+        <ul class="bullets">
+          <li>Trabajadores de oficina pasan <strong>6 a 8 horas sentados</strong> al día.</li>
+          <li>La mala postura genera <strong>lesiones musculoesqueléticas crónicas</strong>.</li>
+          <li>El sedentarismo prolongado incrementa el <strong>riesgo cardiovascular</strong>.</li>
+          <li>No existe <strong>retroalimentación inmediata</strong> sobre la postura.</li>
+          <li>Las pausas activas dependen de la <strong>disciplina del usuario</strong>.</li>
+        </ul>
+      </div>
       <div class="footer">
         <span class="brand">ErgIoT — Universidad de La Salle</span>
         <span class="page">02 / 12</span>
@@ -343,27 +514,33 @@
     </div>
   </section>
 
-  <!-- ========================================================= SLIDE 3 — Objetivo -->
+  <!-- ====================================================== SLIDE 3 — Objetivo -->
   <section class="slide" id="s3">
     <img class="logo-corner" src="assets/logo_lasalle.png" alt="" />
     <div class="slide-inner">
-      <h1>Objetivo del Módulo 5</h1>
-      <p style="font-size: 22px; line-height: 1.5; color: var(--azul-med); margin: 12px 0 26px;">
-        Construir una plataforma de visualización y análisis básico que
-        <strong style="color: var(--azul);">transforme los datos IoT en decisiones ergonómicas accionables</strong>.
-      </p>
-      <div class="three-col">
-        <div class="card">
-          <h3>1 · Visualización</h3>
-          <p>Dashboard interactivo multi-página con identidad institucional La Salle.</p>
+      <div class="slide-header">
+        <h1>Objetivo del Módulo 5</h1>
+      </div>
+      <div class="slide-content">
+        <div class="highlight">
+          <p style="font-size: clamp(18px, 1.7vw, 34px); line-height: 1.4;">
+            Construir una plataforma de visualización y análisis básico que
+            <strong>transforme los datos IoT en decisiones ergonómicas accionables</strong>.
+          </p>
         </div>
-        <div class="card">
-          <h3>2 · Análisis básico</h3>
-          <p>Estadísticas descriptivas, correlación y detección automática de eventos.</p>
-        </div>
-        <div class="card">
-          <h3>3 · Justificación</h3>
-          <p>Argumentar técnicamente cada tecnología seleccionada en el stack.</p>
+        <div class="three-col" style="margin-top: clamp(10px, 1.2vw, 24px);">
+          <div class="card">
+            <h3>1 · Visualización</h3>
+            <p>Dashboard interactivo multi-página con identidad institucional La Salle.</p>
+          </div>
+          <div class="card">
+            <h3>2 · Análisis básico</h3>
+            <p>Descriptivos, correlación y detección automática de eventos.</p>
+          </div>
+          <div class="card">
+            <h3>3 · Justificación</h3>
+            <p>Argumentar técnicamente cada tecnología elegida en el stack.</p>
+          </div>
         </div>
       </div>
       <div class="footer">
@@ -373,27 +550,31 @@
     </div>
   </section>
 
-  <!-- ========================================================= SLIDE 4 — Arquitectura -->
+  <!-- ====================================================== SLIDE 4 — Arquitectura -->
   <section class="slide" id="s4">
     <img class="logo-corner" src="assets/logo_lasalle.png" alt="" />
     <div class="slide-inner">
-      <h1>Arquitectura del sistema</h1>
-      <h2>Pipeline IoT de extremo a extremo</h2>
-      <div class="pipeline">
-        <div class="stage"><strong>📡 ESP32</strong>MPU-6050 + FSR402 + LED</div>
-        <div class="arrow">→</div>
-        <div class="stage"><strong>📶 WiFi/MQTT</strong>HiveMQ Cloud (broker)</div>
-        <div class="arrow">→</div>
-        <div class="stage"><strong>💾 InfluxDB</strong>Series temporales</div>
-        <div class="arrow">→</div>
-        <div class="stage"><strong>📊 Streamlit</strong>Dashboard + Plotly</div>
+      <div class="slide-header">
+        <h1>Arquitectura</h1>
+        <h2>Pipeline IoT de extremo a extremo</h2>
       </div>
-      <div style="background: var(--gris); border-left: 5px solid var(--dorado); padding: 18px 22px; border-radius: 8px; margin-top: 16px;">
-        <p style="font-size: 16px; color: var(--azul-med);">
-          <strong style="color: var(--azul);">Firmware:</strong> MicroPython 1.21 sobre ESP32 DevKit v1<br/>
-          <strong style="color: var(--azul);">Cálculo de ángulo:</strong> arctan2 sobre acelerómetro<br/>
-          <strong style="color: var(--azul);">Muestreo:</strong> 0.5 Hz (1 lectura cada 2 segundos)
-        </p>
+      <div class="slide-content">
+        <div class="pipeline">
+          <div class="stage"><strong>📡 ESP32</strong>MPU-6050 + FSR402 + LED</div>
+          <div class="arrow">→</div>
+          <div class="stage"><strong>📶 MQTT</strong>HiveMQ Cloud broker</div>
+          <div class="arrow">→</div>
+          <div class="stage"><strong>💾 InfluxDB</strong>Series temporales</div>
+          <div class="arrow">→</div>
+          <div class="stage"><strong>📊 Streamlit</strong>Dashboard + Plotly</div>
+        </div>
+        <div class="highlight">
+          <p>
+            <strong>Firmware:</strong> MicroPython 1.21 sobre ESP32 DevKit v1<br/>
+            <strong>Cálculo de ángulo:</strong> función arctan2 sobre el acelerómetro<br/>
+            <strong>Muestreo:</strong> 0.5 Hz — una lectura cada 2 segundos
+          </p>
+        </div>
       </div>
       <div class="footer">
         <span class="brand">ErgIoT — Universidad de La Salle</span>
@@ -402,38 +583,42 @@
     </div>
   </section>
 
-  <!-- ========================================================= SLIDE 5 — Hardware + Datos -->
+  <!-- ====================================================== SLIDE 5 — Hardware + datos -->
   <section class="slide" id="s5">
     <img class="logo-corner" src="assets/logo_lasalle.png" alt="" />
     <div class="slide-inner">
-      <h1>Hardware y modelo de datos</h1>
-      <h2>Lo que sale del prototipo hacia InfluxDB</h2>
-      <div class="two-col" style="margin-top: 8px;">
-        <div>
-          <h3 style="color: var(--azul); font-size: 18px; margin-bottom: 12px;">🛠️ Hardware</h3>
-          <ul class="bullets">
-            <li><strong>ESP32 DevKit v1</strong> — microcontrolador WiFi</li>
-            <li><strong>MPU-6050</strong> — acelerómetro / inclinación</li>
-            <li><strong>FSR402</strong> — sensor de presión del asiento</li>
-            <li><strong>LED RGB</strong> — alerta visual local</li>
-          </ul>
-        </div>
-        <div>
-          <h3 style="color: var(--azul); font-size: 18px; margin-bottom: 12px;">📊 Fields publicados</h3>
-          <table class="tech" style="font-size: 13px;">
-            <tr><td>angulo_grados</td><td>float</td></tr>
-            <tr><td>presion_adc</td><td>int</td></tr>
-            <tr><td>ocupado</td><td>0/1</td></tr>
-            <tr><td>clasificacion_riesgo</td><td>str</td></tr>
-            <tr><td>indice_riesgo</td><td>0/1</td></tr>
-            <tr><td>tiempo_sentado</td><td>min</td></tr>
-            <tr><td>alerta_pausa</td><td>0/1</td></tr>
-          </table>
-        </div>
+      <div class="slide-header">
+        <h1>Hardware y datos</h1>
+        <h2>Sensores físicos y modelo de datos en InfluxDB</h2>
       </div>
-      <div style="margin-top: 18px; font-size: 13px; color: var(--azul-med);">
-        <strong>Bucket:</strong> <code>ErgIoT_Bucket</code> &nbsp; · &nbsp;
-        <strong>Measurement:</strong> <code>telemetria_ergonomica</code>
+      <div class="slide-content">
+        <div class="two-col">
+          <div>
+            <h3 style="color: var(--azul); font-size: clamp(20px, 1.8vw, 36px); margin-bottom: clamp(12px, 1.2vw, 24px);">🛠️ Hardware</h3>
+            <ul class="bullets">
+              <li><strong>ESP32 DevKit v1</strong> — microcontrolador WiFi</li>
+              <li><strong>MPU-6050</strong> — acelerómetro / inclinación</li>
+              <li><strong>FSR402</strong> — sensor de presión del asiento</li>
+              <li><strong>LED RGB</strong> — alerta visual local</li>
+            </ul>
+          </div>
+          <div>
+            <h3 style="color: var(--azul); font-size: clamp(20px, 1.8vw, 36px); margin-bottom: clamp(12px, 1.2vw, 24px);">📊 7 fields publicados</h3>
+            <table class="tech" style="font-size: clamp(13px, 1.2vw, 22px);">
+              <tr><td>angulo_grados</td><td>float</td></tr>
+              <tr><td>presion_adc</td><td>int 0-4095</td></tr>
+              <tr><td>ocupado</td><td>0 / 1</td></tr>
+              <tr><td>clasificacion_riesgo</td><td>str</td></tr>
+              <tr><td>indice_riesgo</td><td>0 / 1</td></tr>
+              <tr><td>tiempo_sentado</td><td>minutos</td></tr>
+              <tr><td>alerta_pausa</td><td>0 / 1</td></tr>
+            </table>
+          </div>
+        </div>
+        <p style="text-align: center; font-size: clamp(13px, 1.2vw, 22px); color: var(--azul-med); margin-top: clamp(10px, 1vw, 20px);">
+          <strong>Bucket:</strong> <code>ErgIoT_Bucket</code> &nbsp;·&nbsp;
+          <strong>Measurement:</strong> <code>telemetria_ergonomica</code>
+        </p>
       </div>
       <div class="footer">
         <span class="brand">ErgIoT — Universidad de La Salle</span>
@@ -442,50 +627,52 @@
     </div>
   </section>
 
-  <!-- ========================================================= SLIDE 6 — Dashboard página 1 -->
+  <!-- ====================================================== SLIDE 6 — Dashboard página 1 -->
   <section class="slide" id="s6">
     <img class="logo-corner" src="assets/logo_lasalle.png" alt="" />
     <div class="slide-inner">
-      <h1>Dashboard · Monitoreo Ergonómico</h1>
-      <h2>Vista principal con KPIs y series en vivo</h2>
-      <div class="two-col" style="margin-top: 10px;">
-        <div>
+      <div class="slide-header">
+        <h1>Monitoreo</h1>
+        <h2>Página principal del dashboard con KPIs y series en vivo</h2>
+      </div>
+      <div class="slide-content">
+        <div class="two-col">
           <ul class="bullets">
             <li><strong>5 KPIs</strong> en tarjetas con borde dorado</li>
             <li><strong>Series temporales</strong> de ángulo, presión, riesgo</li>
-            <li><strong>Umbral 30°</strong> dibujado como línea de alerta</li>
+            <li>Umbral de 30° dibujado como <strong>línea de alerta</strong></li>
             <li><strong>Mapa de calor</strong> hora × día del ángulo</li>
             <li><strong>Histograma</strong> y pie chart de clasificación</li>
-            <li><strong>Tabla de eventos</strong> de mala postura sostenida</li>
+            <li><strong>Tabla de eventos</strong> de mala postura</li>
           </ul>
-        </div>
-        <div class="mockup">
-          <div class="mhead">ErgIoT · Monitoreo Ergonómico</div>
-          <div class="mkpis">
-            <div class="mkpi"><div class="v">1440</div><div class="l">Lecturas</div></div>
-            <div class="mkpi"><div class="v">17.9°</div><div class="l">Ángulo medio</div></div>
-            <div class="mkpi"><div class="v">36.4°</div><div class="l">Ángulo P95</div></div>
-            <div class="mkpi"><div class="v">84%</div><div class="l">Postura OK</div></div>
-          </div>
-          <div class="mchart">
-            <div class="ttl">Ángulo del tronco (5 días)</div>
-            <div class="sparkline">
-              <div class="bar" style="height: 30%"></div>
-              <div class="bar" style="height: 55%"></div>
-              <div class="bar" style="height: 40%"></div>
-              <div class="bar" style="height: 65%"></div>
-              <div class="bar" style="height: 48%"></div>
-              <div class="bar" style="height: 75%; background: var(--rojo)"></div>
-              <div class="bar" style="height: 60%"></div>
-              <div class="bar" style="height: 35%"></div>
-              <div class="bar" style="height: 50%"></div>
-              <div class="bar" style="height: 90%; background: var(--rojo)"></div>
-              <div class="bar" style="height: 45%"></div>
-              <div class="bar" style="height: 28%"></div>
-              <div class="bar" style="height: 38%"></div>
-              <div class="bar" style="height: 52%"></div>
-              <div class="bar" style="height: 70%"></div>
-              <div class="bar" style="height: 40%"></div>
+          <div class="mockup">
+            <div class="mhead">ErgIoT · Monitoreo Ergonómico</div>
+            <div class="mkpis">
+              <div class="mkpi"><div class="v">1440</div><div class="l">Lecturas</div></div>
+              <div class="mkpi"><div class="v">17.9°</div><div class="l">Ángulo medio</div></div>
+              <div class="mkpi"><div class="v">36.4°</div><div class="l">P95</div></div>
+              <div class="mkpi"><div class="v">84%</div><div class="l">Postura OK</div></div>
+            </div>
+            <div class="mchart">
+              <div class="ttl">Ángulo del tronco (5 días)</div>
+              <div class="sparkline">
+                <div class="bar" style="height: 30%"></div>
+                <div class="bar" style="height: 55%"></div>
+                <div class="bar" style="height: 40%"></div>
+                <div class="bar" style="height: 65%"></div>
+                <div class="bar" style="height: 48%"></div>
+                <div class="bar" style="height: 75%; background: var(--rojo)"></div>
+                <div class="bar" style="height: 60%"></div>
+                <div class="bar" style="height: 35%"></div>
+                <div class="bar" style="height: 50%"></div>
+                <div class="bar" style="height: 90%; background: var(--rojo)"></div>
+                <div class="bar" style="height: 45%"></div>
+                <div class="bar" style="height: 28%"></div>
+                <div class="bar" style="height: 38%"></div>
+                <div class="bar" style="height: 52%"></div>
+                <div class="bar" style="height: 70%"></div>
+                <div class="bar" style="height: 40%"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -497,42 +684,44 @@
     </div>
   </section>
 
-  <!-- ========================================================= SLIDE 7 — Buena Postura -->
+  <!-- ====================================================== SLIDE 7 — Buena Postura -->
   <section class="slide" id="s7">
     <img class="logo-corner" src="assets/logo_lasalle.png" alt="" />
     <div class="slide-inner">
-      <h1>Dashboard · Buena Postura</h1>
-      <h2 style="color: var(--dorado-osc);">No solo alertamos — también motivamos</h2>
-      <div class="two-col" style="margin-top: 10px;">
-        <div>
+      <div class="slide-header">
+        <h1>Buena Postura</h1>
+        <h2 style="color: var(--dorado-osc); font-weight: 600;">No solo alertamos — también motivamos</h2>
+      </div>
+      <div class="slide-content">
+        <div class="two-col">
           <ul class="bullets">
             <li><strong>Banner gigante</strong> con el flag actual del sensor</li>
-            <li><strong>Racha continua</strong> de minutos con postura correcta</li>
-            <li><strong>Mejor sesión registrada</strong> (motivación)</li>
-            <li><strong>6 logros</strong> desbloqueables con barras de progreso</li>
-            <li><strong>116 sesiones doradas</strong> detectadas en este periodo</li>
+            <li><strong>Racha continua</strong> de postura correcta</li>
+            <li><strong>Mejor sesión</strong> registrada en la ventana</li>
+            <li><strong>6 logros</strong> desbloqueables</li>
+            <li><strong>116 sesiones doradas</strong> detectadas</li>
             <li><strong>Tendencia diaria</strong> con objetivo del 75%</li>
           </ul>
-        </div>
-        <div class="mockup">
-          <div class="mhead">🌿 Buena Postura</div>
-          <div class="flag-banner">
-            <div class="e">🌿</div>
-            <div class="t">BUENA POSTURA</div>
-            <div class="s">Dentro del rango ergonómico recomendado</div>
-          </div>
-          <div class="mkpis" style="grid-template-columns: repeat(3, 1fr);">
-            <div class="mkpi"><div class="v">10.0</div><div class="l">Racha (min)</div></div>
-            <div class="mkpi"><div class="v">17.5</div><div class="l">Mejor (min)</div></div>
-            <div class="mkpi"><div class="v">84%</div><div class="l">Buena</div></div>
-          </div>
-          <div class="mchart">
-            <div class="ttl">Logros desbloqueados</div>
-            <div style="display: flex; gap: 8px; align-items: center; font-size: 16px;">
-              🏆 <span style="font-size: 11px;">5 min</span>
-              🏆 <span style="font-size: 11px;">15 min</span>
-              🔒 <span style="font-size: 11px; color: #888;">30 min</span>
-              🔒 <span style="font-size: 11px; color: #888;">Día perfecto</span>
+          <div class="mockup">
+            <div class="mhead">🌿 Buena Postura</div>
+            <div class="flag-banner">
+              <div class="e">🌿</div>
+              <div class="t">BUENA POSTURA</div>
+              <div class="s">Dentro del rango ergonómico recomendado</div>
+            </div>
+            <div class="mkpis" style="grid-template-columns: repeat(3, 1fr);">
+              <div class="mkpi"><div class="v">10.0</div><div class="l">Racha (min)</div></div>
+              <div class="mkpi"><div class="v">17.5</div><div class="l">Mejor (min)</div></div>
+              <div class="mkpi"><div class="v">84%</div><div class="l">Buena</div></div>
+            </div>
+            <div class="mchart">
+              <div class="ttl">Logros</div>
+              <div style="display: flex; gap: clamp(8px, 0.8vw, 14px); align-items: center; flex-wrap: wrap; font-size: clamp(16px, 1.5vw, 28px);">
+                <span>🏆</span><span style="font-size: clamp(10px, 0.95vw, 16px); color: var(--azul);">5 min</span>
+                <span>🏆</span><span style="font-size: clamp(10px, 0.95vw, 16px); color: var(--azul);">15 min</span>
+                <span>🔒</span><span style="font-size: clamp(10px, 0.95vw, 16px); color: #888;">30 min</span>
+                <span>🔒</span><span style="font-size: clamp(10px, 0.95vw, 16px); color: #888;">Día perfecto</span>
+              </div>
             </div>
           </div>
         </div>
@@ -544,51 +733,53 @@
     </div>
   </section>
 
-  <!-- ========================================================= SLIDE 8 — Pausas Activas -->
+  <!-- ====================================================== SLIDE 8 — Pausas Activas -->
   <section class="slide" id="s8">
     <img class="logo-corner" src="assets/logo_lasalle.png" alt="" />
     <div class="slide-inner">
-      <h1>Dashboard · Pausas Activas</h1>
-      <h2>Cuando el sedentarismo gana, el sensor avisa</h2>
-      <div class="two-col" style="margin-top: 10px;">
-        <div>
+      <div class="slide-header">
+        <h1>Pausas Activas</h1>
+        <h2>Cuando el sedentarismo gana, el sensor avisa</h2>
+      </div>
+      <div class="slide-content">
+        <div class="two-col">
           <ul class="bullets">
             <li>Usa los campos <code>tiempo_sentado</code> y <code>alerta_pausa</code></li>
             <li><strong>Auto-detección del umbral del firmware: 50.5 min</strong></li>
-            <li>Banner dinámico: ✅ Bajo control → ⏳ Cerca → 🚨 Pausa ya</li>
-            <li>Bandas doradas sobre la serie de tiempo sentado</li>
+            <li>Banner dinámico: ✅ Bajo control → ⏳ Cerca → 🚨 Pausa</li>
+            <li>Bandas doradas sobre la serie temporal</li>
             <li>Tabla de eventos de alerta con duración</li>
-            <li>Recomendaciones de rutina de pausa activa (2–3 min)</li>
+            <li>Rutinas de pausa activa de 2 a 3 minutos</li>
           </ul>
-        </div>
-        <div class="mockup">
-          <div class="mhead">⏱️ Pausas Activas</div>
-          <div class="flag-banner" style="background: linear-gradient(135deg, rgba(199,62,29,.12) 0%, rgba(199,62,29,.25) 100%); border-left-color: var(--rojo);">
-            <div class="e">🚨</div>
-            <div class="t" style="color: var(--rojo);">PAUSA ACTIVA RECOMENDADA</div>
-            <div class="s">Llevas 68 min sentado · Levántate y estírate</div>
-          </div>
-          <div class="mkpis">
-            <div class="mkpi"><div class="v">68</div><div class="l">Actual (min)</div></div>
-            <div class="mkpi"><div class="v">68</div><div class="l">Máximo (min)</div></div>
-            <div class="mkpi"><div class="v">50.5</div><div class="l">Umbral</div></div>
-            <div class="mkpi"><div class="v">1</div><div class="l">Alertas</div></div>
-          </div>
-          <div class="mchart">
-            <div class="ttl">Tiempo sentado acumulado</div>
-            <div class="sparkline">
-              <div class="bar" style="height: 10%"></div>
-              <div class="bar" style="height: 22%"></div>
-              <div class="bar" style="height: 35%"></div>
-              <div class="bar" style="height: 48%"></div>
-              <div class="bar" style="height: 60%; background: var(--dorado)"></div>
-              <div class="bar" style="height: 75%; background: var(--dorado)"></div>
-              <div class="bar" style="height: 90%; background: var(--dorado)"></div>
-              <div class="bar" style="height: 100%; background: var(--dorado-osc)"></div>
-              <div class="bar" style="height: 12%"></div>
-              <div class="bar" style="height: 28%"></div>
-              <div class="bar" style="height: 42%"></div>
-              <div class="bar" style="height: 55%"></div>
+          <div class="mockup">
+            <div class="mhead">⏱️ Pausas Activas</div>
+            <div class="flag-banner" style="background: linear-gradient(135deg, rgba(199,62,29,.12) 0%, rgba(199,62,29,.25) 100%); border-left-color: var(--rojo);">
+              <div class="e">🚨</div>
+              <div class="t" style="color: var(--rojo);">PAUSA ACTIVA RECOMENDADA</div>
+              <div class="s">Llevas 68 min sentado · Levántate y estírate</div>
+            </div>
+            <div class="mkpis">
+              <div class="mkpi"><div class="v">68</div><div class="l">Actual (min)</div></div>
+              <div class="mkpi"><div class="v">68</div><div class="l">Máximo</div></div>
+              <div class="mkpi"><div class="v">50.5</div><div class="l">Umbral</div></div>
+              <div class="mkpi"><div class="v">1</div><div class="l">Alertas</div></div>
+            </div>
+            <div class="mchart">
+              <div class="ttl">Tiempo sentado acumulado</div>
+              <div class="sparkline">
+                <div class="bar" style="height: 10%"></div>
+                <div class="bar" style="height: 22%"></div>
+                <div class="bar" style="height: 35%"></div>
+                <div class="bar" style="height: 48%"></div>
+                <div class="bar" style="height: 60%; background: var(--dorado)"></div>
+                <div class="bar" style="height: 75%; background: var(--dorado)"></div>
+                <div class="bar" style="height: 90%; background: var(--dorado)"></div>
+                <div class="bar" style="height: 100%; background: var(--dorado-osc)"></div>
+                <div class="bar" style="height: 12%"></div>
+                <div class="bar" style="height: 28%"></div>
+                <div class="bar" style="height: 42%"></div>
+                <div class="bar" style="height: 55%"></div>
+              </div>
             </div>
           </div>
         </div>
@@ -600,35 +791,39 @@
     </div>
   </section>
 
-  <!-- ========================================================= SLIDE 9 — Resultados KPIs -->
+  <!-- ====================================================== SLIDE 9 — Resultados KPIs -->
   <section class="slide dark" id="s9">
     <img class="logo-corner" src="assets/logo_lasalle.png" alt="" />
     <div class="slide-inner">
-      <h1 style="color: #fff;">Resultados sobre datos reales</h1>
-      <h2 style="color: var(--azul-claro);">1440 lecturas · 3 al 7 de mayo de 2026 · 5 días monitoreados</h2>
-      <div class="kpi-grid">
-        <div class="kpi">
-          <div class="value">84%</div>
-          <div class="label">Postura correcta</div>
-        </div>
-        <div class="kpi">
-          <div class="value">17.9°</div>
-          <div class="label">Ángulo medio</div>
-        </div>
-        <div class="kpi">
-          <div class="value">31</div>
-          <div class="label">Eventos detectados</div>
-        </div>
-        <div class="kpi">
-          <div class="value">0.76</div>
-          <div class="label">Correlación ángulo ↔ riesgo</div>
-        </div>
+      <div class="slide-header">
+        <h1>Resultados</h1>
+        <h2>1440 lecturas reales · 3 al 7 de mayo de 2026 · 5 días monitoreados</h2>
       </div>
-      <p style="margin-top: 30px; font-size: 18px; color: var(--azul-claro); line-height: 1.5;">
-        La correlación de <strong style="color: var(--dorado);">0.76</strong> entre el ángulo medido
-        y el índice de riesgo calculado en el ESP32 valida matemáticamente que la
-        <strong style="color: #fff;">fórmula del firmware</strong> es coherente con los datos observados.
-      </p>
+      <div class="slide-content">
+        <div class="kpi-grid">
+          <div class="kpi">
+            <div class="value">84%</div>
+            <div class="label">Postura correcta</div>
+          </div>
+          <div class="kpi">
+            <div class="value">17.9°</div>
+            <div class="label">Ángulo medio</div>
+          </div>
+          <div class="kpi">
+            <div class="value">31</div>
+            <div class="label">Eventos detectados</div>
+          </div>
+          <div class="kpi">
+            <div class="value">0.76</div>
+            <div class="label">Correlación ángulo ↔ riesgo</div>
+          </div>
+        </div>
+        <p style="font-size: clamp(16px, 1.5vw, 30px); color: var(--azul-claro); line-height: 1.5; text-align: center; max-width: 90%; margin: 0 auto;">
+          La correlación de <strong style="color: var(--dorado);">0.76</strong> entre el ángulo
+          medido y el índice de riesgo calculado en el ESP32 <strong style="color: #fff;">valida
+          matemáticamente</strong> que la fórmula del firmware es coherente.
+        </p>
+      </div>
       <div class="footer">
         <span class="brand">ErgIoT — Universidad de La Salle</span>
         <span class="page">09 / 12</span>
@@ -636,29 +831,34 @@
     </div>
   </section>
 
-  <!-- ========================================================= SLIDE 10 — Análisis básico -->
+  <!-- ====================================================== SLIDE 10 — Análisis básico -->
   <section class="slide" id="s10">
     <img class="logo-corner" src="assets/logo_lasalle.png" alt="" />
     <div class="slide-inner">
-      <h1>Análisis básico embebido</h1>
-      <h2>Estadística sobre los datos del sensor — Python + pandas</h2>
-      <ul class="bullets col-list">
-        <li><strong>Descriptivos:</strong> media, std, percentiles por variable</li>
-        <li><strong>Matriz de correlación</strong> entre 4 variables numéricas</li>
-        <li><strong>Detección de eventos</strong> por run-length encoding</li>
-        <li><strong>Sesiones doradas</strong> sostenidas (postura correcta)</li>
-        <li><strong>Agregación hora × día</strong> para identificar patrones</li>
-        <li><strong>Auto-detección</strong> del umbral del firmware</li>
-        <li><strong>% buena postura</strong> diario con objetivo</li>
-        <li><strong>Sistema de logros</strong> con barras de progreso</li>
-      </ul>
-      <div style="background: var(--gris); border-left: 5px solid var(--azul); padding: 16px 22px; border-radius: 8px; margin-top: 18px;">
-        <p style="font-size: 15px; color: var(--azul-med);">
-          <strong style="color: var(--azul);">Insight clave detectado por el análisis:</strong>
-          el <strong>7 de mayo</strong> la postura correcta cayó al <strong style="color: var(--rojo);">67%</strong>,
-          frente al <strong style="color: var(--azul);">97%</strong> del 5 de mayo —
-          el dashboard permite identificar este tipo de patrones automáticamente.
-        </p>
+      <div class="slide-header">
+        <h1>Análisis básico</h1>
+        <h2>Estadística embebida con Python + pandas</h2>
+      </div>
+      <div class="slide-content">
+        <ul class="bullets col-list">
+          <li><strong>Descriptivos:</strong> media, std, percentiles</li>
+          <li><strong>Matriz de correlación</strong> entre variables</li>
+          <li><strong>Detección de eventos</strong> por run-length encoding</li>
+          <li><strong>Sesiones doradas</strong> sostenidas</li>
+          <li><strong>Agregación hora × día</strong> para patrones</li>
+          <li><strong>Auto-detección</strong> del umbral del firmware</li>
+          <li><strong>% buena postura</strong> diario con objetivo</li>
+          <li><strong>Sistema de logros</strong> desbloqueables</li>
+        </ul>
+        <div class="highlight" style="margin-top: clamp(14px, 1.4vw, 28px);">
+          <p>
+            <strong>Insight detectado por el análisis:</strong>
+            el <strong>7 de mayo</strong> la postura correcta cayó al
+            <strong style="color: var(--rojo);">67%</strong>, frente al
+            <strong style="color: var(--azul);">97%</strong> del 5 de mayo.
+            El dashboard permite identificar este tipo de patrones automáticamente.
+          </p>
+        </div>
       </div>
       <div class="footer">
         <span class="brand">ErgIoT — Universidad de La Salle</span>
@@ -667,39 +867,43 @@
     </div>
   </section>
 
-  <!-- ========================================================= SLIDE 11 — Justificación tech -->
+  <!-- ====================================================== SLIDE 11 — Justificación tech -->
   <section class="slide" id="s11">
     <img class="logo-corner" src="assets/logo_lasalle.png" alt="" />
     <div class="slide-inner">
-      <h1>Justificación de tecnologías</h1>
-      <h2>Cuatro decisiones técnicas clave</h2>
-      <table class="tech">
-        <thead>
-          <tr><th>Capa</th><th>Tecnología</th><th>Por qué</th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Almacenamiento</td>
-            <td>InfluxDB Cloud 2.x</td>
-            <td>Series temporales nativas, compresión, lenguaje Flux y free tier sin tarjeta.</td>
-          </tr>
-          <tr>
-            <td>Mensajería</td>
-            <td>MQTT (HiveMQ Cloud)</td>
-            <td>80 bytes/msg vs 400 de HTTP — crítico para ESP32 con batería futura.</td>
-          </tr>
-          <tr>
-            <td>Visualización</td>
-            <td>Streamlit + Plotly</td>
-            <td>UI + análisis Python en un solo archivo. Cero JavaScript.</td>
-          </tr>
-          <tr>
-            <td>Identidad</td>
-            <td>Paleta La Salle</td>
-            <td>Azul marino #003057 + dorado #f2a900 extraídos del sitio oficial.</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="slide-header">
+        <h1>Tecnologías</h1>
+        <h2>Cuatro decisiones técnicas clave</h2>
+      </div>
+      <div class="slide-content">
+        <table class="tech">
+          <thead>
+            <tr><th>Capa</th><th>Tecnología</th><th>Por qué</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Almacenamiento</td>
+              <td>InfluxDB Cloud 2.x</td>
+              <td>Series temporales nativas, compresión, lenguaje Flux y free tier.</td>
+            </tr>
+            <tr>
+              <td>Mensajería</td>
+              <td>MQTT · HiveMQ Cloud</td>
+              <td>80 bytes/msg vs 400 de HTTP — crítico para ESP32 con batería.</td>
+            </tr>
+            <tr>
+              <td>Visualización</td>
+              <td>Streamlit + Plotly</td>
+              <td>Une UI y análisis Python en un solo archivo. Cero JavaScript.</td>
+            </tr>
+            <tr>
+              <td>Identidad</td>
+              <td>Paleta La Salle</td>
+              <td>Azul marino #003057 + dorado #f2a900 extraídos del sitio oficial.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
       <div class="footer">
         <span class="brand">ErgIoT — Universidad de La Salle</span>
         <span class="page">11 / 12</span>
@@ -707,43 +911,39 @@
     </div>
   </section>
 
-  <!-- ========================================================= SLIDE 12 — Cierre -->
+  <!-- ====================================================== SLIDE 12 — Cierre -->
   <section class="slide dark" id="s12">
     <img class="logo-corner" src="assets/logo_lasalle.png" alt="" />
     <div class="slide-inner">
-      <h1 style="color: #fff;">Conclusiones</h1>
-      <h2 style="color: var(--azul-claro);">Datos que se traducen en acción</h2>
-
-      <div style="display: grid; gap: 18px; margin-top: 18px;">
-        <div style="background: rgba(255,255,255,.06); border-left: 5px solid var(--dorado); padding: 18px 22px; border-radius: 8px;">
-          <p style="color: #fff; font-size: 17px;">
-            <strong style="color: var(--dorado);">1.</strong>
-            El dashboard convierte <strong>1440 puntos del sensor</strong> en respuestas a tres preguntas
-            operativas: cómo estoy ahora, cuándo empeoro, qué intervenir primero.
+      <div class="slide-header">
+        <h1>Conclusiones</h1>
+        <h2>Datos que se traducen en acción</h2>
+      </div>
+      <div class="slide-content">
+        <div class="dark-card">
+          <p><span class="num">1</span>
+            El dashboard convierte <strong style="color: var(--dorado);">1440 puntos del sensor</strong>
+            en respuestas a tres preguntas operativas: cómo estoy ahora, cuándo empeoro y qué intervenir primero.
           </p>
         </div>
-        <div style="background: rgba(255,255,255,.06); border-left: 5px solid var(--dorado); padding: 18px 22px; border-radius: 8px;">
-          <p style="color: #fff; font-size: 17px;">
-            <strong style="color: var(--dorado);">2.</strong>
-            La correlación de <strong>0.76</strong> entre ángulo y riesgo valida matemáticamente
-            la fórmula implementada en el firmware del ESP32.
+        <div class="dark-card">
+          <p><span class="num">2</span>
+            La correlación de <strong style="color: var(--dorado);">0.76</strong> entre ángulo y riesgo
+            valida matemáticamente la fórmula implementada en el firmware del ESP32.
           </p>
         </div>
-        <div style="background: rgba(255,255,255,.06); border-left: 5px solid var(--dorado); padding: 18px 22px; border-radius: 8px;">
-          <p style="color: #fff; font-size: 17px;">
-            <strong style="color: var(--dorado);">3.</strong>
-            El stack <strong>IoT-Cloud-Streamlit</strong> es reproducible, de costo cero
-            y reutilizable como plantilla para otros proyectos de telemetría.
+        <div class="dark-card">
+          <p><span class="num">3</span>
+            El stack <strong style="color: var(--dorado);">IoT-Cloud-Streamlit</strong> es
+            reproducible, de costo cero y reutilizable como plantilla.
           </p>
+        </div>
+        <div style="text-align: center; margin-top: clamp(20px, 2vw, 44px);">
+          <div style="display: inline-block; background: var(--dorado); color: var(--azul-osc); padding: clamp(12px, 1.2vw, 24px) clamp(24px, 2.4vw, 48px); border-radius: 99px; font-weight: 800; font-size: clamp(14px, 1.4vw, 26px); letter-spacing: 1px;">
+            🔗 github.com/marioevargasp95/IoT-Monitoreo-Ergonomico
+          </div>
         </div>
       </div>
-
-      <div style="margin-top: 26px; text-align: center;">
-        <div style="display: inline-block; background: var(--dorado); color: var(--azul-osc); padding: 8px 22px; border-radius: 99px; font-weight: 700; font-size: 14px;">
-          🔗 github.com/marioevargasp95/IoT-Monitoreo-Ergonomico
-        </div>
-      </div>
-
       <div class="footer">
         <span class="brand">Mario Vargas · Yeison García · La Salle 2026-1</span>
         <span class="page">12 / 12</span>
@@ -753,7 +953,7 @@
 
 </div>
 
-<!-- ========================================================= Controles -->
+<!-- ====================================================== Controles flotantes -->
 <div class="controls" id="controls">
   <button id="prev">◀ Anterior</button>
   <span class="counter" id="counter">1 / 12</span>
@@ -783,14 +983,13 @@
 
   document.addEventListener('keydown', e => {
     if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { show(idx + 1); e.preventDefault(); }
-    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')                  { show(idx - 1); e.preventDefault(); }
-    if (e.key === 'Home')                                              { show(0); }
-    if (e.key === 'End')                                               { show(slides.length - 1); }
-    if (e.key === 'f' || e.key === 'F')                                document.getElementById('fs').click();
-    if (e.key === 'p' || e.key === 'P')                                window.print();
+    if (e.key === 'ArrowLeft'  || e.key === 'PageUp')                   { show(idx - 1); e.preventDefault(); }
+    if (e.key === 'Home') show(0);
+    if (e.key === 'End')  show(slides.length - 1);
+    if (e.key === 'f' || e.key === 'F') document.getElementById('fs').click();
+    if (e.key === 'p' || e.key === 'P') window.print();
   });
 
-  // navegación con clic en mitad derecha / izquierda
   document.getElementById('deck').addEventListener('click', e => {
     if (e.target.closest('.controls') || e.target.closest('button')) return;
     if (e.clientX > window.innerWidth / 2) show(idx + 1);
